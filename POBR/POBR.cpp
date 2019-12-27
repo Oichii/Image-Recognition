@@ -452,27 +452,21 @@ float distance(pair<int, int> c1, pair<int, int> c2) {
 
 int main()
 {
-	// rect jest 400 x 200 pix 
-	Mat rect = imread("rect.png");
-	cout << moment(rect, 0,0) << endl;
-    //
+	cout << "wczytanie" << endl; // wczytanie obrazów 
 	Mat img_clean = imread("S1.jpg");
 	Mat img = imread("S1.jpg");
-	//Mat img = imread("S0_wzor.png");
-	cout << "wczytanie" << endl;
-    //cv::namedWindow("image_to detect", WINDOW_NORMAL);
-    //cv::imshow("image_to_detect", img);
-	cout << "segmentacja" << endl;
 
+	cout << "segmentacja" << endl; // segmentacja na podstawie barwy 
 	Mat img2 = Segment(img, 100);
-	//img2 = open(img2, 3);
-	cout << "zamkniecie" << endl;
+	cout << "otwarcie" << endl; // pozbycie sie farfocli
+	img2 = open(img2, 3);
+	cout << "zamkniecie" << endl; // powrot do poprzednieg o rozmiaru 
 	img2 = close(img2, 3);
 	namedWindow("segmented", WINDOW_NORMAL);
 	cv::imshow("segmented", img2);
 	waitKey(0);
 
-	Mat con = connectedComp(img2);
+	Mat con = connectedComp(img2); // rozdzielenie elementów obrazu przez connected components 
 	cv::imshow("segmented", con);
 	waitKey(0);
 	vector<Mat> letterM;
@@ -480,7 +474,7 @@ int main()
 	vector<Mat> logo;
 	for (int i = 1; i <= 255; i++) {
 		Mat selected = devideImage(con, i, i, i);
-		if (moment(selected, 0, 0)>100) {
+		if (moment(selected, 0, 0)>100) { // obliczenie momentow 
 			cout << moment(selected, 0, 0) << endl;
 			float curr_M1 = M1(selected);
 			float curr_M7 = M7(selected);
@@ -493,7 +487,7 @@ int main()
 			//cv::imshow("image", selected);
 			//cv::waitKey(0);
 		
-			if (curr_M1 > 300.0 && curr_M1 < 800.0) {
+			if (curr_M1 > 300.0 && curr_M1 < 800.0) { // rozdzielenie obiektow na podstawie 
 				logo.push_back(selected);
 				cout << "dodano logo" << endl;
 				//cv::namedWindow("image", WINDOW_NORMAL);
@@ -544,10 +538,7 @@ int main()
 			//cv::imshow("image", logoElements[p]);
 			//cv::waitKey(0);
 		}
-		//imshow("image", logoElements[0] + logoElements[1]+ logoElements[2]);
-		//obliczyc odleglosci miedzy bboxami 
-		//vector<float> dist;
-		//float distances[centers.size][centers.size]; //46, 50 
+		
 		for (int k = 0; k < centersLogo.size(); k++) {
 			for (int l = 0; l < centersM.size(); l++) {
 				float LL = pow(distance(centersLogo[k], centersM[l]), 2) / moment(logo[k], 0, 0);
@@ -557,7 +548,7 @@ int main()
 						float LL2 = pow(distance(centersLogo[k], centersA[m]), 2) / moment(logo[k], 0, 0);
 						cout << LL2 << endl;
 						
-						if (LL2 > 0 && LL2 < 2) {
+						if (LL2 > 0 && LL2 < 2) { // decyzja  
 							cout << "wykryto" << endl;			
 							Mat I = logo[k] + letterA[m] + letterM[l];
 							Mat b = centerGeom(I, img_clean);
@@ -573,12 +564,5 @@ int main()
 			}
 		}
 	}
-	//cv::imshow("segmented", img2);
-
-	img2 = Lightness(img2, 200);
-	//cv::namedWindow("light", WINDOW_NORMAL);
-	//cv::imshow("light", img2);
-	//cv::waitKey(0);
-
     return 0;
 }
