@@ -1,9 +1,10 @@
 
 # Image Recognition
 
+## About
 This project implements Superpharm logo recognition using classical image processing metods. OpenCV image processing functions was not used (OpenCV was used only for reading and displaying image).
 
-# Implementation
+## Implementation
 
 * reading image from file
 * converting RGB color space to HSV
@@ -14,6 +15,6 @@ This project implements Superpharm logo recognition using classical image proces
 * calculating distance between recognised components of the logo
 * decision werther logo is found on the image
 
-# Technology
+## Technology
 * C ++
 
